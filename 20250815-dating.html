@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>丰秀雅苑美食探索地图 | 精准定位版</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: transparent;
+            color: #2c3e50;
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 多层背景图片容器 */
+        .background-image-1 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/1.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.8;
+            z-index: -11;
+        }
+        
+        .background-image-2 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/2.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.15;
+            z-index: -10;
+            mix-blend-mode: overlay;
+        }
+        
+        .background-image-3 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/3.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.12;
+            z-index: -9;
+            mix-blend-mode: soft-light;
+        }
+        
+        .background-image-4 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/4.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            z-index: -8;
+            mix-blend-mode: multiply;
+        }
+        
+        .background-image-5 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/5.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.08;
+            z-index: -7;
+            mix-blend-mode: overlay;
+        }
+        
+        .background-image-6 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/6.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.08;
+            z-index: -6;
+            mix-blend-mode: color-burn;
+        }
+        
+        .background-image-7 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/7.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.07;
+            z-index: -5;
+            mix-blend-mode: darken;
+        }
+        
+        .background-image-8 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/8.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.06;
+            z-index: -4;
+            mix-blend-mode: screen;
+        }
+        
+        .background-image-9 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/9.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.06;
+            z-index: -3;
+            mix-blend-mode: luminosity;
+        }
+        
+        .background-image-10 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/10.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.05;
+            z-index: -2;
+            mix-blend-mode: difference;
+        }
+        
+        .background-image-11 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./picture/11.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.05;
+            z-index: -1;
+            mix-blend-mode: hue;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            background: transparent;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 0;
+            background: transparent;
+            position: relative;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23ecf0f1;stop-opacity:0.1" /><stop offset="100%" style="stop-color:%23bdc3c7;stop-opacity:0.05" /></linearGradient></defs><rect width="100%" height="100%" fill="url(%23grad1)"/><circle cx="80" cy="60" r="3" fill="%23e74c3c" opacity="0.2"/><circle cx="320" cy="240" r="2" fill="%2327ae60" opacity="0.15"/><circle cx="200" cy="150" r="1.5" fill="%233498db" opacity="0.2"/><path d="M50,100 Q150,50 250,100 Q350,150 380,120" stroke="%2395a5a6" stroke-width="1" fill="none" opacity="0.15"/><path d="M20,200 Q120,180 220,200 Q320,220 380,200" stroke="%23bdc3c7" stroke-width="0.8" fill="none" opacity="0.1"/><polygon points="60,80 65,70 70,80 65,90" fill="%23e67e22" opacity="0.1"/><polygon points="340,180 345,170 350,180 345,190" fill="%23f39c12" opacity="0.08"/></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%23bdc3c7" opacity="0.3"/><circle cx="80" cy="80" r="1.5" fill="%23bdc3c7" opacity="0.2"/><circle cx="60" cy="30" r="1" fill="%23bdc3c7" opacity="0.4"/></svg>') repeat;
+            pointer-events: none;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .subtitle {
+            font-style: italic;
+            font-size: 1.4rem;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        .intro {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: #34495e;
+            background: transparent;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .map-section {
+            margin: 80px 0;
+            background: transparent;
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .map-header {
+            background: transparent;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .map-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .map-container {
+            padding: 0;
+            background: transparent;
+            position: relative;
+        }
+        
+        .map-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(52, 152, 219, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(230, 126, 34, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(39, 174, 96, 0.05) 0%, transparent 50%),
+                linear-gradient(45deg, transparent 40%, rgba(149, 165, 166, 0.03) 50%, transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .map-background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="%23ecf0f1" stroke-width="0.5" opacity="0.3"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/><circle cx="50" cy="50" r="2" fill="%23bdc3c7" opacity="0.2"/><circle cx="150" cy="150" r="1.5" fill="%2395a5a6" opacity="0.15"/><path d="M30,30 Q70,10 110,30 T190,30" stroke="%23ecf0f1" stroke-width="1" fill="none" opacity="0.2"/></svg>');
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        #map-div {
+            width: 100%;
+            height: 700px;
+            position: relative;
+            z-index: 10;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .restaurants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+        
+        .restaurant-card {
+            background: transparent;
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .restaurant-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: translate(30%, -30%);
+            z-index: 1;
+        }
+        
+        .restaurant-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .price-economy { border-left-color: #27ae60; }
+        .price-mid { border-left-color: #3498db; }
+        .price-luxury { border-left-color: #e67e22; }
+        
+        .restaurant-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px dotted #ecf0f1;
+            padding-bottom: 10px;
+        }
+        
+        .cuisine-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .price-info {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .price-economy .price-info { color: #27ae60; }
+        .price-mid .price-info { color: #3498db; }
+        .price-luxury .price-info { color: #e67e22; }
+        
+        .distance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .distance-item {
+            text-align: center;
+        }
+        
+        .distance-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .distance-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        .keywords {
+            color: #555;
+            font-style: italic;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(116, 185, 255, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #74b9ff;
+        }
+        
+        .address {
+            background: rgba(39, 174, 96, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid #27ae60;
+            font-size: 0.95rem;
+            color: #555;
+        }
+        
+        .legend {
+            background: transparent;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            backdrop-filter: blur(8px);
+        }
+        
+        .legend h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .legend-items {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 25px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        
+        .economy { background-color: #27ae60; }
+        .mid-range { background-color: #3498db; }
+        .luxury { background-color: #e67e22; }
+        .home { background-color: #e74c3c; }
+        
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            background: transparent;
+            color: white;
+            margin-top: 80px;
+        }
+        
+        footer p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .restaurants-grid { grid-template-columns: 1fr; }
+            .distance-grid { grid-template-columns: 1fr; }
+            .legend-items { flex-direction: column; align-items: center; }
+            #map-div { height: 500px; }
+            
+            .background-image-1 {
+                width: 70%;
+                height: 40%;
+            }
+            
+            .background-image-2 {
+                width: 65%;
+                height: 50%;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coordinates-display {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景图片容器 -->
+    <div class="background-image-1"></div>
+    <div class="background-image-2"></div>
+    <div class="background-image-3"></div>
+    <div class="background-image-4"></div>
+    <div class="background-image-5"></div>
+    <div class="background-image-6"></div>
+    <div class="background-image-7"></div>
+    <div class="background-image-8"></div>
+    <div class="background-image-9"></div>
+    <div class="background-image-10"></div>
+    <div class="background-image-11"></div>
+    
+    <!-- 背景音乐控制 -->
+    <div id="music-control" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.8); padding: 10px; border-radius: 5px; cursor: pointer;">
+        🎵 点击播放音乐
+    </div>
+    <audio id="background-music" loop preload="auto">
+        <source src="./picture/天空之城-李志-钢琴版.ogg" type="audio/ogg">
+        <source src="./picture/天空之城-李志-钢琴版.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+    
+    <main class="container">
+        <header>
+            <!-- Header content removed as requested -->
+        </header>
+
+        <section class="map-section">
+            <div class="map-header">
+                <h2>互动式美食地图</h2>
+                <p>点击地图上的标记查看详细信息</p>
+            </div>
+            <div class="map-container">
+                <div class="map-background-pattern"></div>
+                <div id="map-div"></div>
+            </div>
+        </section>
+
+        <section class="legend">
+            <h3>餐厅分类图例</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color economy"></div>
+                    <span>经济实惠 (¥100-200)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color mid-range"></div>
+                    <span>中档精选 (¥200-350)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color luxury"></div>
+                    <span>高端奢华 (¥350+)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color home"></div>
+                    <span>丰秀雅苑 (起点)</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="restaurants-grid" id="restaurants-container">
+            <!-- 餐厅卡片将通过JavaScript动态生成 -->
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 丰秀雅苑美食探索地图 - 让美食触手可及</p>
+        </div>
+    </footer>
+
+    <script>
+        // 餐厅数据 - 完整更新版本
+        const restaurantData = [
+            {
+                name: "醉辉皇(中以创新园店)",
+                cuisine: "粤菜",
+                price: 369,
+                directDistance: 3.1,
+                taxiDistance: "4.8km",
+                taxiTime: "15分钟",
+                subwayDistance: "10.4km",
+                subwayTime: "42分钟",
+                keywords: "粤式豪华宴请、海鲜商务套餐、黑松露烩花胶肚、复古工业风环境",
+                address: "祁祁连山路111号中以创新园4-5号楼1-2层",
+                environment: "复古工业风环境，设施齐全",
+                scenery: "无特殊景观标注",
+                category: "高端奢华",
+                lat: 31.273802,
+                lon: 121.377367
+            },
+            {
+                name: "喜鼎海胆水饺(上海泸定路店)",
+                cuisine: "东北菜",
+                price: 120,
+                directDistance: 8.0,
+                taxiDistance: "15.2km",
+                taxiTime: "27分钟",
+                subwayDistance: "12.8km",
+                subwayTime: "55分钟",
+                keywords: "海胆水饺、东北菜、手工现包",
+                address: "泸定路276弄7号楼",
+                environment: "轻奢风格，环境雅致，适合商务宴请",
+                scenery: "无特殊景观标注",
+                category: "经济实惠",
+                lat: 31.225646,
+                lon: 121.387905
+            },
+            {
+                name: "丰收日(场中路店)",
+                cuisine: "本帮菜",
+                price: 150,
+                directDistance: 0.3,
+                taxiDistance: "4.7km",
+                taxiTime: "14分钟",
+                subwayDistance: "13.7km",
+                subwayTime: "48分钟",
+                keywords: "本帮菜、海鲜、家庭聚餐",
+                address: "场中路4066号(场中路地铁站1号口步行270米)",
+                environment: "家庭聚会首选，干净整洁，适合婚宴",
+                scenery: "无特殊景观标注",
+                category: "经济实惠",
+                lat: 31.302285,
+                lon: 121.416287
+            },
+            {
+                name: "徐记海鲜(南某东路店)",
+                cuisine: "海鲜粤菜",
+                price: 280,
+                directDistance: 6.2,
+                taxiDistance: "17.6km",
+                taxiTime: "41分钟",
+                subwayDistance: "18.9km",
+                subwayTime: "1小时2分钟",
+                keywords: "海鲜、粤菜、商务宴请",
+                address: "恒基名人购物中心6F徐记海鲜(南某东路店)",
+                environment: "装修高雅，适合商务宴请和家庭聚餐",
+                scenery: "无特殊景观标注",
+                category: "中档精选",
+                lat: 31.237803,
+                lon: 121.484322
+            },
+            {
+                name: "上海滩餐厅(新天地店)",
+                cuisine: "本帮创意菜",
+                price: 400,
+                directDistance: 7.1,
+                taxiDistance: "17.9km",
+                taxiTime: "45分钟",
+                subwayDistance: "18.1km",
+                subwayTime: "1小时",
+                keywords: "本帮菜、创意菜、复古风情",
+                address: "黄陂南路358号",
+                environment: "城市特色美食，环境高雅，适合商务宴请",
+                scenery: "无特殊景观标注",
+                category: "高端奢华",
+                lat: 31.220725,
+                lon: 121.475327
+            },
+            {
+                name: "美龄缘(洛克·外滩源店)",
+                cuisine: "江浙菜",
+                price: 350,
+                directDistance: 6.3,
+                taxiDistance: "16.2km",
+                taxiTime: "50分钟",
+                subwayDistance: "19.6km",
+                subwayTime: "1小时13分钟",
+                keywords: "江浙菜、民国风情、露台景观",
+                address: "女青年会大楼133号6楼",
+                environment: "城市特色美食，口感细腻",
+                scenery: "无特殊景观标注",
+                category: "高端奢华",
+                lat: 31.241816,
+                lon: 121.48802
+            },
+            {
+                name: "海湾荟(北外滩店)",
+                cuisine: "粤菜",
+                price: 600,
+                directDistance: 6.5,
+                taxiDistance: "18.4km",
+                taxiTime: "45分钟",
+                subwayDistance: "24.8km",
+                subwayTime: "1小时21分钟",
+                keywords: "粤菜、江景餐厅、高端宴请",
+                address: "黄浦路53号上海海湾大厦F27层",
+                environment: "融合菜，商务宴请，江景餐厅",
+                scenery: "江景",
+                category: "高端奢华",
+                lat: 31.244434,
+                lon: 121.491704
+            },
+            {
+                name: "凯悦酒店·享悦中餐厅(环球港店)",
+                cuisine: "粤菜",
+                price: 250,
+                directDistance: 7.9,
+                taxiDistance: "14.8km",
+                taxiTime: "29分钟",
+                subwayDistance: "12.7km",
+                subwayTime: "46分钟",
+                keywords: "粤菜、酒店中餐、商务套餐",
+                address: "中山北路3300号上海环球港凯悦酒店4楼",
+                environment: "风景不错，视野开阔，适合家庭聚餐",
+                scenery: "视野开阔",
+                category: "中档精选",
+                lat: 31.231893,
+                lon: 121.412561
+            },
+            {
+                name: "品尊轩(铜川路店)",
+                cuisine: "粤菜",
+                price: 200,
+                directDistance: 4.5,
+                taxiDistance: "10.2km",
+                taxiTime: "26分钟",
+                subwayDistance: "19km",
+                subwayTime: "55分钟",
+                keywords: "粤菜、茶点、酒店餐厅",
+                address: "铜川路50号上海明捷万丽酒店2层",
+                environment: "城市特色美食，方便停车",
+                scenery: "无特殊景观标注",
+                category: "经济实惠",
+                lat: 31.255821,
+                lon: 121.420763
+            }
+        ];
+
+        // 家的精确坐标 - 丰秀雅苑（更新）
+        const homeLocation = {
+            lat: 31.3328,
+            lon: 121.4735,
+            name: "丰秀雅苑",
+            address: "上海市宝山区走马塘路1166弄1-11号"
+        };
+
+        // 更新价格分类逻辑
+        const updateCategories = () => {
+            restaurantData.forEach(restaurant => {
+                if (restaurant.price <= 200) {
+                    restaurant.category = "经济实惠";
+                } else if (restaurant.price <= 350) {
+                    restaurant.category = "中档精选";
+                } else {
+                    restaurant.category = "高端奢华";
+                }
+            });
+        };
+
+        // 为餐厅数据添加计算的距离
+        restaurantData.forEach(restaurant => {
+            restaurant.distance = restaurant.directDistance; // 使用提供的精确直线距离
+        });
+
+        // 创建餐厅卡片
+        function createRestaurantCards() {
+            const container = document.getElementById('restaurants-container');
+            updateCategories(); // 更新分类
+            
+            restaurantData.forEach((restaurant, index) => {
+                const categoryClass = 
+                    restaurant.category === '经济实惠' ? 'price-economy' :
+                    restaurant.category === '中档精选' ? 'price-mid' : 'price-luxury';
+                
+                // 为每个餐厅分配对应的背景图片 (2-10对应前9个餐厅，11对应最后一个)
+                const backgroundImageNumber = index < 9 ? index + 2 : 11;
+                
+                const cardHTML = `
+                    <div class="restaurant-card ${categoryClass}" style="position: relative;">
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('./picture/${backgroundImageNumber}.jpeg'); background-size: cover; background-position: center; opacity: 0.3; z-index: -1; border-radius: 15px;"></div>
+                        <div class="restaurant-name">${restaurant.name}</div>
+                        <div class="cuisine-tag">${restaurant.cuisine}</div>
+                        <div class="price-info">人均 ¥${restaurant.price}</div>
+                        
+                        <div class="distance-grid">
+                            <div class="distance-item">
+                                <div class="distance-label">直线距离</div>
+                                <div class="distance-value">${restaurant.directDistance}km</div>
+                            </div>
+                            <div class="distance-item">
+                                <div class="distance-label">打车路线</div>
+                                <div class="distance-value">${restaurant.taxiDistance}/${restaurant.taxiTime}</div>
+                            </div>
+                            <div class="distance-item">
+                                <div class="distance-label">地铁路线</div>
+                                <div class="distance-value">${restaurant.subwayDistance}/${restaurant.subwayTime}</div>
+                            </div>
+                            <div class="distance-item">
+                                <div class="distance-label">景观特色</div>
+                                <div class="distance-value">${restaurant.scenery}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="keywords">${restaurant.keywords}</div>
+                        <div class="address">地址：${restaurant.address}</div>
+                        <div class="address" style="border-left-color: #3498db; background: rgba(52, 152, 219, 0.1);">环境特色：${restaurant.environment}</div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        // 创建地图
+        function createMap() {
+            const traces = [];
+            
+            // 添加家的位置 - 丰秀雅苑
+            traces.push({
+                type: 'scattergeo',
+                lon: [homeLocation.lon],
+                lat: [homeLocation.lat],
+                text: [homeLocation.name],
+                mode: 'markers',
+                marker: {
+                    size: 18,
+                    color: '#e74c3c',
+                    symbol: 'star',
+                    line: { width: 3, color: 'white' }
+                },
+                name: '丰秀雅苑(起点)',
+                hovertemplate: '<b>%{text}</b><br>地址: ' + homeLocation.address + '<br>坐标: %{lon:.4f}, %{lat:.4f}<extra></extra>'
+            });
+
+            // 按价格类别分组餐厅
+            const categories = {
+                '经济实惠': { color: '#27ae60', restaurants: [] },
+                '中档精选': { color: '#3498db', restaurants: [] },
+                '高端奢华': { color: '#e67e22', restaurants: [] }
+            };
+
+            restaurantData.forEach(restaurant => {
+                categories[restaurant.category].restaurants.push(restaurant);
+            });
+
+            // 为每个类别添加trace
+            Object.keys(categories).forEach(category => {
+                const categoryData = categories[category];
+                if (categoryData.restaurants.length > 0) {
+                    const hoverText = categoryData.restaurants.map(r => 
+                        `<b>${r.name}</b><br>菜系: ${r.cuisine}<br>人均: ¥${r.price}<br>直线距离: ${r.directDistance}km<br>打车: ${r.taxiDistance}/${r.taxiTime}<br>地铁: ${r.subwayDistance}/${r.subwayTime}<br>地址: ${r.address}<br>环境: ${r.environment}<br>景观: ${r.scenery}`
+                    );
+                    
+                    traces.push({
+                        type: 'scattergeo',
+                        lon: categoryData.restaurants.map(r => r.lon),
+                        lat: categoryData.restaurants.map(r => r.lat),
+                        text: categoryData.restaurants.map(r => r.name),
+                        mode: 'markers',
+                        marker: {
+                            size: 14,
+                            color: categoryData.color,
+                            line: { width: 2, color: 'white' },
+                            opacity: 0.8
+                        },
+                        name: `${category} (¥${Math.min(...categoryData.restaurants.map(r => r.price))}-${Math.max(...categoryData.restaurants.map(r => r.price))})`,
+                        hovertemplate: '%{customdata}<extra></extra>',
+                        customdata: hoverText
+                    });
+                }
+            });
+
+            // 添加连线（从丰秀雅苑到各餐厅）
+            restaurantData.forEach(restaurant => {
+                traces.push({
+                    type: 'scattergeo',
+                    lon: [homeLocation.lon, restaurant.lon],
+                    lat: [homeLocation.lat, restaurant.lat],
+                    mode: 'lines',
+                    line: { width: 1.5, color: 'rgba(128,128,128,0.4)', dash: 'dot' },
+                    showlegend: false,
+                    hoverinfo: 'skip'
+                });
+            });
+
+            const layout = {
+                title: {
+                    text: '丰秀雅苑周边美食探索地图<br><sub>基于精确GPS坐标的上海餐厅距离与特色指南</sub>',
+                    x: 0.5,
+                    font: { size: 24, family: 'serif', color: '#2F4F4F' }
+                },
+                geo: {
+                    projection: { type: 'mercator' },
+                    showland: true,
+                    landcolor: 'rgb(250, 248, 240)',
+                    coastlinecolor: 'rgb(180, 180, 180)',
+                    showocean: true,
+                    oceancolor: 'rgb(230, 245, 255)',
+                    showlakes: true,
+                    lakecolor: 'rgb(230, 245, 255)',
+                    showrivers: true,
+                    rivercolor: 'rgb(230, 245, 255)',
+                    center: { lat: 31.30, lon: 121.43 },
+                    lonaxis: { range: [121.35, 121.52] },
+                    lataxis: { range: [31.20, 31.40] },
+                    bgcolor: 'rgba(255,255,255,0)'
+                },
+                legend: {
+                    orientation: 'v',
+                    yanchor: 'top',
+                    y: 0.95,
+                    xanchor: 'left',
+                    x: 0.02,
+                    bgcolor: 'rgba(255,255,255,0.9)',
+                    bordercolor: 'rgba(128,128,128,0.5)',
+                    borderwidth: 1,
+                    font: { size: 12 }
+                },
+                width: null,
+                height: 700,
+                paper_bgcolor: 'rgb(253, 253, 250)',
+                font: { family: 'serif' },
+                margin: { l: 0, r: 0, t: 60, b: 0 }
+            };
+
+            const config = {
+                responsive: true,
+                displayModeBar: false
+            };
+
+            Plotly.newPlot('map-div', traces, layout, config);
+        }
+
+        // 音乐自动播放功能
+        function initAutoPlayMusic() {
+            const audio = document.getElementById('background-music');
+            const musicControl = document.getElementById('music-control');
+            
+            // 尝试自动播放
+            const attemptAutoPlay = () => {
+                audio.play().then(() => {
+                    musicControl.textContent = '🔇 点击暂停音乐';
+                    musicControl.style.display = 'block';
+                }).catch(() => {
+                    // 自动播放失败，显示播放按钮
+                    musicControl.textContent = '🎵 点击播放音乐';
+                    musicControl.style.display = 'block';
+                });
+            };
+            
+            // 立即尝试自动播放
+            attemptAutoPlay();
+            
+            // 添加用户交互后的自动播放
+            const enableAutoPlay = () => {
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        musicControl.textContent = '🔇 点击暂停音乐';
+                    }).catch(() => {
+                        musicControl.textContent = '🎵 点击播放音乐';
+                    });
+                }
+                // 移除事件监听器，避免重复执行
+                document.removeEventListener('click', enableAutoPlay);
+                document.removeEventListener('keydown', enableAutoPlay);
+                document.removeEventListener('touchstart', enableAutoPlay);
+            };
+            
+            // 监听用户交互事件
+            document.addEventListener('click', enableAutoPlay);
+            document.addEventListener('keydown', enableAutoPlay);
+            document.addEventListener('touchstart', enableAutoPlay);
+            
+            // 音乐控制按钮功能
+            musicControl.addEventListener('click', function(e) {
+                e.stopPropagation(); // 防止触发自动播放事件
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        musicControl.textContent = '🔇 点击暂停音乐';
+                    }).catch(() => {
+                        musicControl.textContent = '🎵 音频加载失败';
+                    });
+                } else {
+                    audio.pause();
+                    musicControl.textContent = '🎵 点击播放音乐';
+                }
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createRestaurantCards();
+            createMap();
+            initAutoPlayMusic();
+        });
+    </script>
+</body>
+</html>
